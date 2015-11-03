@@ -1,0 +1,6 @@
+service_name: sample_web
+type: web
+flag_id_description: Flags are identified by the note name.
+description: Password-protected note storage service for the web.
+apt_dependencies: 
+    - php5-mcrypt

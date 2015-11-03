@@ -1,0 +1,67 @@
+#!/usr/bin/env python2.7
+import os
+import sys
+
+# This service stores notes with a name and a password.
+# More or less the same as the C one, see that for more comments :)
+
+
+def service_example():
+    print "Hi! Welcome to our note storage service"
+    print "Want to (R)ead or (W)rite a note?"
+    sys.stdout.flush() # Note the flush calls!
+
+    cmd = raw_input()
+    if cmd[0] == 'R':
+        read_note()
+    elif cmd[0] == 'W':
+        write_note()
+    elif cmd[0] == 'X':
+        SECRET_EXPLOIT_COMMAND()
+    else:
+        print "What was that? I don't know what that means!"
+
+
+def read_note():
+    print "Please type: note_id password"
+    sys.stdout.flush()
+    note_id, password = raw_input().split(' ', 2)
+    note_id = int(note_id); assert note_id >= 0
+
+    # Files are named "<id>" and "<id>_password"
+    # Note that we start your service after a cd to your (only!)
+    # writeable directory.
+    with open("{}_password".format(note_id)) as f:
+        real_password = f.read()
+    if password != real_password:
+        print "Wrong password!"
+        return
+    with open("{}".format(note_id)) as f:
+        print "Note content:", f.read()
+
+
+def write_note():
+    print "Please type: note_id password content"
+    print "The note_id is an number. No extra whitespace!"
+    sys.stdout.flush()
+    note_id, password, content = raw_input().split(' ', 3)
+    note_id = int(note_id); assert note_id >= 0
+
+    with open("{}_password".format(note_id), "wx") as f:
+        f.write(password)
+    with open("{}".format(note_id), "wx") as f:
+        f.write(content)
+    print "Your note is safe with us! Bye!"
+
+
+def SECRET_EXPLOIT_COMMAND():
+    print "Which note?"
+    sys.stdout.flush()
+    note_id = raw_input()
+    note_id = int(note_id); assert note_id >= 0
+    with open("{}".format(note_id)) as f:
+        print "Note content:", f.read()
+
+
+if __name__ == "__main__":
+    service_example()

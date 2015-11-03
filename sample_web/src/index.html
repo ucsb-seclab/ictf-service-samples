@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head><title>PHP Sample note-storage service</title></head>
+<body>
+    <h1>Welcome to our PHP Sample note-storage service</h1>
+    <p>More or less the same as the C one, see that for more comments :)<br>
+    However, this one auto-generates the note identifier (a.k.a., the <tt>flag_id</tt>) when one is written, and uses <tt>pwntools</tt> for its getflag/setflag/... scripts.
+    <p><form action="write.php" method="post">
+        <input type="text" name="content" required pattern="[a-zA-Z0-9]+" placeholder="Note content">
+        <input type="text" name="password" required pattern="[a-zA-Z0-9]+" placeholder="Password">
+        <input type="submit" value="Write that note">
+    </form></p>
+    <p><form action="read.php" method="post">
+        <input type="text" name="note_id" required pattern="[a-f0-9]+" placeholder="Note ID">
+        <input type="text" name="password" required pattern="[a-zA-Z0-9]+" placeholder="Password">
+        <input type="submit" value="Read that note">
+    </form></p>
+</body>
+</html>

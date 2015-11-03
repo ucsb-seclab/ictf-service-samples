@@ -1,0 +1,9 @@
+architecture: x86_64
+service_name: sample_py
+type: console
+description: Password-protected note storage service in Python.
+flag_id_description: Flags are identified by the note name.
+apt_dependencies: 
+    - sl
+pip_dependencies: 
+    - loremipsum

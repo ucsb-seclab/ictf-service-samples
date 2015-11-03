@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "You can also pre-populate the rw directory via this script" > postinst_test

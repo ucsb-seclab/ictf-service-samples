@@ -1,5 +1,15 @@
-bundle:
-	cp src/sample_py service/ro/
-	rm -f ../sample_python.tgz
-	tar caf ../sample_python.tgz *
-	@echo "#### Double check ../sample_python.tgz and submit it :) ####"
+.PHONY: all service bundle spawn
+SERVICE=sample_py
+
+all: bundle
+
+service:
+	cp src/$(SERVICE) service/ro/
+
+bundle: service
+	rm -f ../$(SERVICE).tgz
+	tar caf ../$(SERVICE).tgz *
+	@echo "#### Double check ../$(SERVICE).tgz and submit it :) ####"
+
+spawn: service
+	( cd service/rw && socat tcp-l:6666,reuseaddr,fork exec:"../ro/$(SERVICE)" )

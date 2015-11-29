@@ -16,13 +16,8 @@ def set_flag(ip, port, flag):
 
     # Interaction with the service
     # Try to be robust, services will not always answer immediately
-    if ip:
-        conn = socket.create_connection((ip,port))
-        c = pexpect.fdpexpect.fdspawn(conn.fileno())
-    else:
-        # Makes it easier to test locally
-        c = pexpect.spawn("../src/sample_py")
-        c.logfile = sys.stdout
+    conn = socket.create_connection((ip,port))
+    c = pexpect.fdpexpect.fdspawn(conn.fileno())
 
     c.expect("Hi! Welcome to our note storage service")
     c.expect("Want to \(R\)ead or \(W\)rite a note?") # Note: these are RegExps!
@@ -35,7 +30,7 @@ def set_flag(ip, port, flag):
 
     c.expect("Your note is safe with us! Bye!")
     c.close()
-    if ip: conn.close()
+    conn.close()
 
     return {
             'FLAG_ID': note_id, # Unique id for each flag
@@ -44,4 +39,4 @@ def set_flag(ip, port, flag):
 
 
 if __name__ == "__main__":
-    print set_flag(None, None, "FLG_just_testing")
+    print set_flag("127.0.0.1", 6666, sys.argv[1] if len(sys.argv)>1 else "FLG1234567890")

@@ -19,13 +19,8 @@ def benign(ip, port):
     password = ''.join(random.choice(POSSIBILITIES) for x in range(20))
     content = ''.join(random.choice(POSSIBILITIES) for x in range(20))
 
-    if ip:
-        conn = socket.create_connection((ip,port))
-        c = pexpect.fdpexpect.fdspawn(conn.fileno())
-    else:
-        # Makes it easier to test locally
-        c = pexpect.spawn("../src/sample_py")
-        c.logfile = sys.stdout
+    conn = socket.create_connection((ip,port))
+    c = pexpect.fdpexpect.fdspawn(conn.fileno())
     c.expect("Hi! Welcome to our note storage service")
     c.expect("Want to \(R\)ead or \(W\)rite a note?")
     c.sendline("W")
@@ -34,18 +29,13 @@ def benign(ip, port):
     c.sendline("{} {} {}".format(note_id, password, content))
     c.expect("Your note is safe with us! Bye!")
     c.close()
-    if ip: conn.close()
+    conn.close()
 
     while True: # Safety over all :D
         wrong_password = ''.join(random.choice(POSSIBILITIES) for x in range(20))
         if wrong_password != password: break
-    if ip:
-        conn = socket.create_connection((ip,port))
-        c = pexpect.fdpexpect.fdspawn(conn.fileno())
-    else:
-        # Makes it easier to test locally
-        c = pexpect.spawn("../src/sample_py")
-        c.logfile = sys.stdout
+    conn = socket.create_connection((ip,port))
+    c = pexpect.fdpexpect.fdspawn(conn.fileno())
     c.expect("Hi! Welcome to our note storage service")
     c.expect("Want to \(R\)ead or \(W\)rite a note?")
     c.sendline("R")
@@ -53,28 +43,24 @@ def benign(ip, port):
     c.sendline("{} {}".format(note_id, wrong_password))
     c.expect("Wrong password!")
     c.close()
-    if ip: conn.close()
+    conn.close()
     
-    if ip:
-        conn = socket.create_connection((ip,port))
-        c = pexpect.fdpexpect.fdspawn(conn.fileno())
-    else:
-        # Makes it easier to test locally
-        c = pexpect.spawn("../src/sample_py")
-        c.logfile = sys.stdout
+    conn = socket.create_connection((ip,port))
+    c = pexpect.fdpexpect.fdspawn(conn.fileno())
     c.expect("Hi! Welcome to our note storage service")
     c.expect("Want to \(R\)ead or \(W\)rite a note?")
     c.sendline("R")
     c.expect("Please type: note_id password")
     c.sendline("{} {}".format(note_id, password))
     c.expect("Note content: ")
-    retrieved_content = c.readline().strip()
+    c.expect("\n")
+    retrieved_content = c.before.strip()
     assert content == retrieved_content
     c.close()
-    if ip: conn.close()
+    conn.close()
 
     # Nothing to return, if we got here without exceptions we assume that everything worked :)
 
 
 if __name__ == "__main__":
-    benign(None, None)
+    benign("127.0.0.1", 6666)
